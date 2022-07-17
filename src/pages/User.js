@@ -182,7 +182,6 @@ export default function User() {
                                 />
                                 <TableBody>
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        // eslint-disable-next-line camelcase
                                         const { account_status, address, dob, full_name, id, role, username, student_school, student_year } = row;
                                         const isItemSelected = selected.indexOf(username) !== -1;
 
@@ -206,16 +205,12 @@ export default function User() {
                                                         </Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                {/* eslint-disable-next-line camelcase */}
                                                 <TableCell align="left">{full_name}</TableCell>
                                                 <TableCell align="left">{address}</TableCell>
                                                 <TableCell align="left">{dob}</TableCell>
                                                 <TableCell align="left">{role}</TableCell>
-                                                {/* eslint-disable-next-line camelcase */}
                                                 <TableCell align="left">{student_school}</TableCell>
-                                                {/* eslint-disable-next-line camelcase */}
                                                 <TableCell align="left">{student_year}</TableCell>
-                                                {/* eslint-disable-next-line camelcase */}
                                                 <TableCell align="left">{account_status}</TableCell>
                                                 <TableCell align="right">
                                                     <UserMoreMenu row={row} reLoad={reLoad} setReLoad={setReLoad} />
@@ -253,7 +248,11 @@ export default function User() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateUserModal openCreateModal={openCreateModal} setOpenCreateModal={setOpenCreateModal} reLoad={reLoad} setReLoad={setReLoad} />
+                    <CreateUserModal
+                        openCreateModal={openCreateModal}
+                        setOpenCreateModal={setOpenCreateModal}
+                        reLoad={reLoad}
+                        setReLoad={setReLoad} />
                 </Card>
             </Container>
         </Page>

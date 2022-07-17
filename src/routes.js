@@ -6,6 +6,7 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import User from './pages/User';
 import NotFound from './pages/Page404';
 import DashboardApp from './pages/DashboardApp';
+import Doms from "./pages/Doms";
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,7 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
+        { path: 'doms', element: <Doms /> },
       ],
     },
     {

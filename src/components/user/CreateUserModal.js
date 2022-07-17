@@ -38,7 +38,7 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
     const [openNoti, setOpenNoti] = useState(false);
     const [openFields, setOpenFields] = useState(false);
 
-    const {handleSubmit, control, formState: {errors}, getValues} = useForm({
+    const {handleSubmit, control, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
     });
 
