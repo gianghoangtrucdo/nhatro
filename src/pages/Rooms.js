@@ -1,6 +1,6 @@
-import { filter } from 'lodash';
+import {filter} from 'lodash';
 import {useEffect, useState} from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 // material
 import {
     Card,
@@ -15,29 +15,26 @@ import {
     Container,
     Typography,
     TableContainer,
-    TablePagination,
+    TablePagination, TableHead,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import {UserListHead, UserListToolbar} from '../sections/@dashboard/user';
 import * as API from '../constants/index';
 import CreateUserModal from "../components/user/CreateUserModal";
+import Data from '../_mock/rooms';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'username', label: 'Username', alignRight: false },
-    { id: 'fullName', label: 'Full Name', alignRight: false },
-    { id: 'address', label: 'Address', alignRight: false },
-    { id: 'dob', label: 'Date Of Birth', alignRight: false },
-    { id: 'role', label: 'Role', alignRight: false },
-    { id: 'school', label: 'School Name', alignRight: false },
-    { id: 'year', label: 'School Year', alignRight: false },
-    { id: 'accountStatus', label: 'Account Status', alignRight: false },
-    { id: '' },
+    {id: 'no', label: 'No'},
+    {id: 'name', label: 'Room name', alignRight: false},
+    {id: 'dom', label: 'Doom name', alignRight: false},
+    {id: 'maxStudent', label: 'Max student per room', alignRight: false},
+    {id: 'option', label: 'Option', alignRight: false},
 ];
 
 // ----------------------------------------------------------------------
@@ -71,7 +68,7 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Rooms() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -83,7 +80,7 @@ export default function User() {
     const [filterName, setFilterName] = useState('');
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    
+
     const [listUsers, setListUsers] = useState([]);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -91,41 +88,17 @@ export default function User() {
     const [reLoad, setReLoad] = useState(false);
 
     useEffect(() => {
-        fetch(API.users)
-            .then(res => res.json())
-            .then((res) => {
-                setListUsers(res);
-            });
+        // fetch(API.users)
+        //     .then(res => res.json())
+        //     .then((res) => {
+        //         setListUsers(res);
+        //     });
     }, [reLoad]);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = listUsers.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -141,87 +114,76 @@ export default function User() {
         setFilterName(event.target.value);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listUsers.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Data.length) : 0;
 
-    const filteredUsers = applySortFilter(listUsers, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(Data, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
     return (
-        <Page title="User">
+        <Page title="Rooms">
             <Container>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                     <Typography variant="h4" gutterBottom>
-                        User
+                        Rooms
                     </Typography>
                     <Button
                         variant="contained"
                         component={RouterLink}
                         to="#"
-                        startIcon={<Iconify icon="eva:plus-fill" />}
+                        startIcon={<Iconify icon="eva:plus-fill"/>}
                         onClick={() => setOpenCreateModal(!openCreateModal)}
                     >
-                        New User
+                        New Room
                     </Button>
                 </Stack>
 
                 <Card>
-                    <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+                    <UserListToolbar numSelected={selected.length} filterName={filterName}
+                                     onFilterName={handleFilterByName}/>
 
                     <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{minWidth: 800}}>
                             <Table>
                                 <UserListHead
                                     order={order}
                                     orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
-                                    rowCount={listUsers.length}
-                                    numSelected={selected.length}
+                                    rowCount={Data.length}
                                     onRequestSort={handleRequestSort}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    isShowHeadCheckbox={true}
+                                    isShowHeadCheckbox={false}
                                 />
                                 <TableBody>
-                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { account_status, address, dob, full_name, id, role, username, student_school, student_year } = row;
-                                        const isItemSelected = selected.indexOf(username) !== -1;
+                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                        const {id, name, max_student} = row;
 
                                         return (
                                             <TableRow
                                                 hover
                                                 key={id}
                                                 tabIndex={-1}
-                                                role="checkbox"
-                                                selected={isItemSelected}
-                                                aria-checked={isItemSelected}
                                             >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, username)} />
+                                                <TableCell>{index}</TableCell>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" noWrap>
+                                                        {name}
+                                                    </Typography>
                                                 </TableCell>
+                                                <TableCell/>
+                                                <TableCell align="left">{max_student}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Avatar alt={username} src={username} />
-                                                        <Typography variant="subtitle2" noWrap>
-                                                            {username}
-                                                        </Typography>
+                                                        <Button variant="contained">Edit</Button>
+                                                        <Button variant="contained">Delete</Button>
+                                                        <Button variant="contained">Add new contract</Button>
                                                     </Stack>
-                                                </TableCell>
-                                                <TableCell align="left">{full_name}</TableCell>
-                                                <TableCell align="left">{address}</TableCell>
-                                                <TableCell align="left">{dob}</TableCell>
-                                                <TableCell align="left">{role}</TableCell>
-                                                <TableCell align="left">{student_school}</TableCell>
-                                                <TableCell align="left">{student_year}</TableCell>
-                                                <TableCell align="left">{account_status}</TableCell>
-                                                <TableCell align="right">
-                                                    <UserMoreMenu row={row} reLoad={reLoad} setReLoad={setReLoad} />
                                                 </TableCell>
                                             </TableRow>
                                         );
                                     })}
                                     {emptyRows > 0 && (
-                                        <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={6} />
+                                        <TableRow style={{height: 53 * emptyRows}}>
+                                            <TableCell colSpan={6}/>
                                         </TableRow>
                                     )}
                                 </TableBody>
@@ -229,8 +191,8 @@ export default function User() {
                                 {isUserNotFound && (
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                <SearchNotFound searchQuery={filterName} />
+                                            <TableCell align="center" colSpan={6} sx={{py: 3}}>
+                                                <SearchNotFound searchQuery={filterName}/>
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -242,7 +204,7 @@ export default function User() {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={listUsers.length}
+                        count={Data.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
@@ -253,7 +215,7 @@ export default function User() {
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}
-                        setReLoad={setReLoad} />
+                        setReLoad={setReLoad}/>
                 </Card>
             </Container>
         </Page>

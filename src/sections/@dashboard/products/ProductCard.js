@@ -24,7 +24,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { host_id, name, cover, nb_room, address, hosts, status } = product;
+  const { id, name, cover, nb_room, address, hosts, status } = product;
 
   return (
     <Card>
@@ -48,7 +48,7 @@ export default function ShopProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to={"/dashboard/dom/" + host_id} color="inherit" underline="hover" component={RouterLink}>
+        <Link to={"/dashboard/dom/" + id} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>
