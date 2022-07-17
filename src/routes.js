@@ -7,6 +7,7 @@ import User from './pages/User';
 import NotFound from './pages/Page404';
 import DashboardApp from './pages/DashboardApp';
 import Doms from "./pages/Doms";
+import ViewAndUpdateDormitory from "./components/dormitory/ViewAndUpdateDormitory";
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +20,7 @@ export default function Router() {
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'doms', element: <Doms /> },
+        { path: 'dom/:id', element: <ViewAndUpdateDormitory /> },
       ],
     },
     {
