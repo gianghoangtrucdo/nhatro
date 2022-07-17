@@ -1,6 +1,6 @@
-import { filter } from 'lodash';
+import {filter} from 'lodash';
 import {useEffect, useState} from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 // material
 import {
     Card,
@@ -15,7 +15,7 @@ import {
     Container,
     Typography,
     TableContainer,
-    TablePagination,
+    TablePagination, TableHead,
 } from '@mui/material';
 // components
 import * as API from '../constants/index';
@@ -23,46 +23,51 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
-import CreateUserModal from "../components/user/CreateUserModal";
+import {UserListHead} from '../sections/@dashboard/user';
+import CreateRoomModal from "../components/room/CreateRoomModal";
+import UpdateRoomModal from "../components/room/UpdateRoomModal";
+import {applySortFilter, getComparator} from "../sections/@dashboard/common";
+import Data from "../_mock/contract";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'username', label: 'Username', alignRight: false },
-    { id: 'fullName', label: 'Full Name', alignRight: false },
-    { id: 'address', label: 'Address', alignRight: false },
-    { id: 'dob', label: 'Date Of Birth', alignRight: false },
-    { id: 'role', label: 'Role', alignRight: false },
-    { id: 'school', label: 'School Name', alignRight: false },
-    { id: 'year', label: 'School Year', alignRight: false },
-    { id: 'accountStatus', label: 'Account Status', alignRight: false },
-    { id: '' },
+    {id: 'no', label: 'No'},
+    {id: 'student', label: 'Student', alignRight: false},
+    {id: 'room', label: 'Room name', alignRight: false},
+    {id: 'startDate', label: 'Start Date', alignRight: false},
+    {id: 'endDate', label: 'End Date', alignRight: false},
+    {id: 'pricePerMonth', label: 'Price / Month', alignRight: false},
+    {id: 'status', label: 'Status', alignRight: false},
+    {id: '', label: 'Option', alignRight: false},
 ];
 
 // ----------------------------------------------------------------------
 
-export default function User() {
+export default function Invoices() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
 
     const [orderBy, setOrderBy] = useState('name');
 
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    
-    const [listUsers, setListUsers] = useState(undefined);
+    const [filterName, setFilterName] = useState('');
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const [listUsers, setListUsers] = useState([]);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const [reLoad, setReLoad] = useState(false);
 
     useEffect(() => {
-        fetch(API.users)
-            .then(res => res.json())
-            .then((res) => {
-                setListUsers(res);
-            });
+        // fetch(API.users)
+        //     .then(res => res.json())
+        //     .then((res) => {
+        //         setListUsers(res);
+        //     });
     }, [reLoad]);
 
     const handleRequestSort = (event, property) => {
@@ -80,41 +85,45 @@ export default function User() {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listUsers?.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Data.length) : 0;
 
-    return listUsers !== undefined && (
-        <Page title="User">
+    const filteredUsers = applySortFilter(Data, getComparator(order, orderBy), filterName);
+
+    const isUserNotFound = filteredUsers.length === 0;
+
+    return (
+        <Page title="Contracts">
             <Container>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                     <Typography variant="h4" gutterBottom>
-                        User
+                        Invoices
                     </Typography>
                     <Button
                         variant="contained"
                         component={RouterLink}
                         to="#"
-                        startIcon={<Iconify icon="eva:plus-fill" />}
+                        startIcon={<Iconify icon="eva:plus-fill"/>}
                         onClick={() => setOpenCreateModal(!openCreateModal)}
                     >
-                        New User
+                        New Invoice
                     </Button>
                 </Stack>
 
                 <Card>
                     <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{minWidth: 800}}>
                             <Table>
                                 <UserListHead
                                     order={order}
                                     orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
-                                    rowCount={listUsers.length}
+                                    rowCount={Data.length}
                                     onRequestSort={handleRequestSort}
                                     isShowHeadCheckbox={false}
                                 />
                                 <TableBody>
-                                    {listUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { account_status, address, dob, full_name, id, role, username, student_school, student_year } = row;;
+                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                        const {id, student, room, startDate, endDate, pricePerMonth,status} = row;
 
                                         return (
                                             <TableRow
@@ -122,39 +131,38 @@ export default function User() {
                                                 key={id}
                                                 tabIndex={-1}
                                             >
-                                                <TableCell component="th" scope="row">
-                                                    <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Avatar alt={username} src={username} />
-                                                        <Typography variant="subtitle2" noWrap>
-                                                            {username}
-                                                        </Typography>
-                                                    </Stack>
+                                                <TableCell>{index}</TableCell>
+                                                <TableCell>
+                                                    <Typography variant="subtitle2" noWrap>
+                                                        {student.name}
+                                                    </Typography>
                                                 </TableCell>
-                                                <TableCell align="left">{full_name}</TableCell>
-                                                <TableCell align="left">{address}</TableCell>
-                                                <TableCell align="left">{dob}</TableCell>
-                                                <TableCell align="left">{role}</TableCell>
-                                                <TableCell align="left">{student_school}</TableCell>
-                                                <TableCell align="left">{student_year}</TableCell>
-                                                <TableCell align="left">{account_status}</TableCell>
-                                                <TableCell align="right">
-                                                    <UserMoreMenu row={row} reLoad={reLoad} setReLoad={setReLoad} />
+                                                <TableCell align="left">{room.name}</TableCell>
+                                                <TableCell align="left">{startDate}</TableCell>
+                                                <TableCell align="left">{endDate}</TableCell>
+                                                <TableCell align="left">{pricePerMonth}</TableCell>
+                                                <TableCell align="left">{status}</TableCell>
+                                                <TableCell component="th" scope="row" padding="none">
+                                                    <Stack direction="row" alignItems="center" spacing={2}>
+                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
+                                                        <Button variant="contained">Delete</Button>
+                                                    </Stack>
                                                 </TableCell>
                                             </TableRow>
                                         );
                                     })}
                                     {emptyRows > 0 && (
-                                        <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={6} />
+                                        <TableRow style={{height: 53 * emptyRows}}>
+                                            <TableCell colSpan={6}/>
                                         </TableRow>
                                     )}
                                 </TableBody>
 
-                                {listUsers?.length === 0 && (
+                                {isUserNotFound && (
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                <SearchNotFound />
+                                            <TableCell align="center" colSpan={6} sx={{py: 3}}>
+                                                <SearchNotFound searchQuery={filterName}/>
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -164,20 +172,26 @@ export default function User() {
                     </Scrollbar>
 
                     <TablePagination
-                        rowsPerPageOptions={[10, 20, 30]}
+                        rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={listUsers.length}
+                        count={Data.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateUserModal
+                    <CreateRoomModal
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}
-                        setReLoad={setReLoad} />
+                        setReLoad={setReLoad}/>
+
+                    <UpdateRoomModal
+                        openUpdateModal={openUpdateModal}
+                        setOpenUpdateModal={setOpenUpdateModal}
+                        reLoad={reLoad}
+                        setReLoad={setReLoad}/>
                 </Card>
             </Container>
         </Page>

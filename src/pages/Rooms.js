@@ -1,6 +1,6 @@
 import {filter} from 'lodash';
 import {useEffect, useState} from 'react';
-import {Link as RouterLink} from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
 // material
 import {
     Card,
@@ -25,8 +25,8 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead} from '../sections/@dashboard/user';
 import Data from '../_mock/rooms';
-import CreateRoomModal from "../components/rooms/CreateRoomModal";
-import UpdateRoomModal from "../components/rooms/UpdateRoomModal";
+import CreateRoomModal from "../components/room/CreateRoomModal";
+import UpdateRoomModal from "../components/room/UpdateRoomModal";
 import {applySortFilter, getComparator} from "../sections/@dashboard/common";
 
 // ----------------------------------------------------------------------
@@ -56,6 +56,8 @@ export default function Rooms() {
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
+    const navigate = useNavigate();
 
     const [reLoad, setReLoad] = useState(false);
 
@@ -140,7 +142,7 @@ export default function Rooms() {
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
-                                                        <Button variant="contained">View Contract</Button>
+                                                        <Button variant="contained" onClick={() => navigate('/dashboard/contracts')}>View Contract</Button>
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
