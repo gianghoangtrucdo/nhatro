@@ -24,8 +24,8 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead, UserListToolbar} from '../sections/@dashboard/user';
 import * as API from '../constants/index';
-import CreateUserModal from "../components/user/CreateUserModal";
 import Data from '../_mock/rooms';
+import CreateRoomModal from "../components/rooms/CreateRoomModal";
 
 // ----------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ export default function Rooms() {
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained">Edit</Button>
                                                         <Button variant="contained">Delete</Button>
-                                                        <Button variant="contained">Add new contract</Button>
+                                                        <Button variant="contained">View Contract</Button>
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
@@ -211,7 +211,7 @@ export default function Rooms() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateUserModal
+                    <CreateRoomModal
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}
