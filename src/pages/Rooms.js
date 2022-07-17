@@ -18,14 +18,16 @@ import {
     TablePagination, TableHead,
 } from '@mui/material';
 // components
+import * as API from '../constants/index';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import {UserListHead, UserListToolbar} from '../sections/@dashboard/user';
-import * as API from '../constants/index';
+import {UserListHead} from '../sections/@dashboard/user';
 import Data from '../_mock/rooms';
 import CreateRoomModal from "../components/rooms/CreateRoomModal";
+import UpdateRoomModal from "../components/rooms/UpdateRoomModal";
+import {applySortFilter, getComparator} from "../sections/@dashboard/common";
 
 // ----------------------------------------------------------------------
 
@@ -39,41 +41,10 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
-
 export default function Rooms() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -84,6 +55,7 @@ export default function Rooms() {
     const [listUsers, setListUsers] = useState([]);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const [reLoad, setReLoad] = useState(false);
 
@@ -108,10 +80,6 @@ export default function Rooms() {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-    };
-
-    const handleFilterByName = (event) => {
-        setFilterName(event.target.value);
     };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Data.length) : 0;
@@ -139,9 +107,6 @@ export default function Rooms() {
                 </Stack>
 
                 <Card>
-                    <UserListToolbar numSelected={selected.length} filterName={filterName}
-                                     onFilterName={handleFilterByName}/>
-
                     <Scrollbar>
                         <TableContainer sx={{minWidth: 800}}>
                             <Table>
@@ -173,7 +138,7 @@ export default function Rooms() {
                                                 <TableCell align="left">{max_student}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Button variant="contained">Edit</Button>
+                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
                                                         <Button variant="contained">View Contract</Button>
                                                     </Stack>
@@ -214,6 +179,12 @@ export default function Rooms() {
                     <CreateRoomModal
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
+                        reLoad={reLoad}
+                        setReLoad={setReLoad}/>
+
+                    <UpdateRoomModal
+                        openUpdateModal={openUpdateModal}
+                        setOpenUpdateModal={setOpenUpdateModal}
                         reLoad={reLoad}
                         setReLoad={setReLoad}/>
                 </Card>
