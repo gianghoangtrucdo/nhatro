@@ -22,6 +22,7 @@ import Iconify from '../components/Iconify';
 import {UserListHead} from '../sections/@dashboard/user';
 import {getContracts, getRooms, getStudents} from "../connector/fetch";
 import CreateForm from "../components/contract/CreateForm";
+import EditForm from "../components/contract/EditForm";
 
 // ----------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ export default function Contracts() {
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
     
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(-1);
 
     const [reLoad, setReLoad] = useState(false);
 
@@ -140,10 +141,20 @@ export default function Contracts() {
                                                 <TableCell align="left">{status}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
+                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(id)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
                                                         <Button variant="contained" onClick={() => navigate('/dashboard/invoices')}>Invoice</Button>
                                                     </Stack>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <EditForm
+                                                        item={row}
+                                                        rooms={listRooms}
+                                                        students={listStudents}
+                                                        openUpdateModal={openUpdateModal}
+                                                        setOpenUpdateModal={setOpenUpdateModal}
+                                                        reLoad={reLoad}
+                                                        setReLoad={setReLoad}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

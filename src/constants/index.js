@@ -7,6 +7,8 @@ module.exports = Object.freeze({
     getStudents: `${serverAddress}/user/students`,
     createUser: `${serverAddress}/user/create`,
     updateUser: `${serverAddress}/user/update`,
+    login: `${serverAddress}/user/login`,
+    logout: `${serverAddress}/user/logout`,
 
     getDoms: `${serverAddress}/dom/list`,
     getDom: `${serverAddress}/dom`,
@@ -20,4 +22,5 @@ module.exports = Object.freeze({
 
     getContracts: `${serverAddress}/contract/list`,
     createContract: `${serverAddress}/contract/create`,
+    updateContract: `${serverAddress}/contract/update`,
 });
