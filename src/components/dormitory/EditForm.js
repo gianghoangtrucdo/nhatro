@@ -68,6 +68,7 @@ export default function EditForm({item, openModal, setOpenModal, reLoad, setReLo
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ' + localStorage.getItem("ACCESS_TOKEN")
             }
         }).then((res) => res.json())
             .then((res) => {

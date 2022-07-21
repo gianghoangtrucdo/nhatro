@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import {useEffect, useState} from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
 // material
 import {
     Card,
@@ -25,6 +25,7 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
 import CreateForm from "../components/user/CreateForm";
+import {getDoms, getUsers} from "../connector/fetch";
 
 // ----------------------------------------------------------------------
 
@@ -57,12 +58,16 @@ export default function User() {
 
     const [reLoad, setReLoad] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        fetch(API.users)
-            .then(res => res.json())
-            .then((res) => {
-                setListUsers(res);
-            });
+        (async function () {
+            const {json, logData} = await getUsers(0, 50)
+            if (logData.status === 401) {
+                navigate('/');
+            }
+            setListUsers(json);
+        })()
     }, [reLoad]);
 
     const handleRequestSort = (event, property) => {

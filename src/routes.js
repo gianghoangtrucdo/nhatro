@@ -12,6 +12,7 @@ import Contracts from "./pages/Contracts";
 import DomRooms from "./components/dormitory/Rooms";
 import Invoices from "./pages/Invoices";
 import Rooms from "./pages/Rooms";
+import Login from "./pages/Login";
 
 // ----------------------------------------------------------------------
 
@@ -35,7 +36,8 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Login/> },
+        { path: 'login', element: <Login/> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

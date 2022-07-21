@@ -1,6 +1,12 @@
 import QueryString from 'query-string';
 import * as consts from "../constants/index"
 
+export const getUsers = async (offset = 0, limit = 50) => {
+    return await get(consts.users, {
+        offset: offset, limit: limit,
+    })
+}
+
 export const getHosts = async (offset = 0, limit = 50) => {
     return await get(consts.getHosts, {
         offset: offset, limit: limit,
@@ -33,6 +39,10 @@ export const getRoomsByDomId = async (offset = 0, limit = 50, domId) => {
     })
 }
 
+export const createContract = async (body) => {
+    return await post(consts.createContract, body)
+}
+
 export const getContracts = async (offset = 0, limit = 50) => {
     return await get(consts.getContracts, {
         offset: offset, limit: limit
@@ -47,6 +57,7 @@ export const getRooms = async (offset = 0, limit = 50) => {
 
 const defaultHeaders = {
     Accept: 'application/json', 'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + localStorage.getItem("ACCESS_TOKEN")
 };
 
 const request = async (url, method, body, customHeaders = {}) => {
@@ -92,7 +103,10 @@ const request = async (url, method, body, customHeaders = {}) => {
         }
     }
 
-    return json;
+    return {
+        json,
+        logData
+    };
 };
 
 export const get = (endpoint, params, headers = {}) => {

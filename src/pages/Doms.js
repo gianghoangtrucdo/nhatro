@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Link as RouterLink} from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 // material
 import {Button, Container, Stack, Typography} from '@mui/material';
 // components
@@ -14,11 +14,15 @@ const Doms = () => {
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [reLoad, setReLoad] = useState(false);
     const [doms, setDoms] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async function () {
-            const doms = await getDoms(0, 50)
-            setDoms(doms);
+            const {json, logData} = await getDoms(0, 50)
+            if (logData.status === 401) {
+                navigate('/');
+            }
+            setDoms(json);
         })()
     }, [reLoad])
 

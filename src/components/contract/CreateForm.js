@@ -13,6 +13,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as API from '../../constants/index';
 import {DesktopDatePicker} from "@mui/lab";
+import {createContract, getDoms} from "../../connector/fetch";
 
 const style = {
     position: 'absolute',
@@ -51,6 +52,7 @@ export default function CreateForm({rooms, students, openCreateModal, setOpenCre
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ' + localStorage.getItem("ACCESS_TOKEN")
             }
         }).then((res) => res.json())
             .then((res) => {

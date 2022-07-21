@@ -56,8 +56,11 @@ export default function Rooms() {
 
     useEffect(() => {
         (async function () {
-            const rooms = await getRooms(0, 50);
-            setListRooms(rooms);
+            const {json, logData} = await getRooms(0, 50);
+            if (logData.status === 401) {
+                navigate('/');
+            }
+            setListRooms(json);
         })()
     }, [reLoad]);
 

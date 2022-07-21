@@ -75,8 +75,11 @@ export default function Contracts() {
 
     useEffect(() => {
         (async function () {
-            const contracts = await getContracts(0, 50)
-            setListContracts(contracts);
+            const {json, logData} = await getContracts(0, 50)
+            if (logData.status === 401) {
+                navigate('/');
+            }
+            setListContracts(json);
         })()
     }, [reLoad]);
     
