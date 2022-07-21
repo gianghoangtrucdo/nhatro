@@ -89,7 +89,7 @@ export default function EditForm({item, openModal, setOpenModal, reLoad, setReLo
                     >
                         <Box sx={style}>
                             <Stack direction="column" spacing={4}>
-                                <h2>Create new Dormitory</h2>
+                                <h2>Edit Dormitory</h2>
                                 <Controller
                                     name="name"
                                     control={control}

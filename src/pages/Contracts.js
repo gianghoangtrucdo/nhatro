@@ -6,28 +6,23 @@ import {
     Card,
     Table,
     Stack,
-    Avatar,
     Button,
-    Checkbox,
     TableRow,
     TableBody,
     TableCell,
     Container,
     Typography,
     TableContainer,
-    TablePagination, TableHead,
+    TablePagination,
 } from '@mui/material';
 // components
-import * as API from '../constants/index';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
-import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead} from '../sections/@dashboard/user';
 import CreateForm from "../components/room/CreateForm";
 import EditForm from "../components/room/EditForm";
-import {applySortFilter, getComparator} from "../sections/@dashboard/common";
-import Data from "../_mock/contract";
+import {getContracts, getDoms} from "../connector/fetch";
 
 // ----------------------------------------------------------------------
 
@@ -47,17 +42,12 @@ const TABLE_HEAD = [
 export default function Contracts() {
     const [page, setPage] = useState(0);
 
-    const [order, setOrder] = useState('asc');
-
-    const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
-
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [listUsers, setListUsers] = useState([]);
+    const [listContracts, setListContracts] = useState([]);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
+    
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const [reLoad, setReLoad] = useState(false);
@@ -65,19 +55,12 @@ export default function Contracts() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // fetch(API.users)
-        //     .then(res => res.json())
-        //     .then((res) => {
-        //         setListUsers(res);
-        //     });
+        (async function () {
+            const contracts = await getContracts(0, 50)
+            setListContracts(contracts);
+        })()
     }, [reLoad]);
-
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
+    
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -87,11 +70,7 @@ export default function Contracts() {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Data.length) : 0;
-
-    const filteredUsers = applySortFilter(Data, getComparator(order, orderBy), filterName);
-
-    const isUserNotFound = filteredUsers.length === 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listContracts.length) : 0;
 
     return (
         <Page title="Contracts">
@@ -116,15 +95,12 @@ export default function Contracts() {
                         <TableContainer sx={{minWidth: 800}}>
                             <Table>
                                 <UserListHead
-                                    order={order}
-                                    orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
-                                    rowCount={Data.length}
-                                    onRequestSort={handleRequestSort}
+                                    rowCount={listContracts.length}
                                     isShowHeadCheckbox={false}
                                 />
                                 <TableBody>
-                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                    {listContracts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                                         const {id, student, room, startDate, endDate, pricePerMonth,status} = row;
 
                                         return (
@@ -160,16 +136,6 @@ export default function Contracts() {
                                         </TableRow>
                                     )}
                                 </TableBody>
-
-                                {isUserNotFound && (
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell align="center" colSpan={6} sx={{py: 3}}>
-                                                <SearchNotFound searchQuery={filterName}/>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                )}
                             </Table>
                         </TableContainer>
                     </Scrollbar>
@@ -177,24 +143,12 @@ export default function Contracts() {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={Data.length}
+                        count={listContracts.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
-
-                    <CreateForm
-                        openCreateModal={openCreateModal}
-                        setOpenCreateModal={setOpenCreateModal}
-                        reLoad={reLoad}
-                        setReLoad={setReLoad}/>
-
-                    <EditForm
-                        openUpdateModal={openUpdateModal}
-                        setOpenUpdateModal={setOpenUpdateModal}
-                        reLoad={reLoad}
-                        setReLoad={setReLoad}/>
                 </Card>
             </Container>
         </Page>

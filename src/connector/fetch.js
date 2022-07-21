@@ -27,6 +27,12 @@ export const getRoomsByDomId = async (offset = 0, limit = 50, domId) => {
     })
 }
 
+export const getContracts = async (offset = 0, limit = 50) => {
+    return await get(consts.getContracts, {
+        offset: offset, limit: limit
+    })
+}
+
 export const getRooms = async (offset = 0, limit = 50) => {
     return await get(consts.getRooms, {
         offset: offset, limit: limit
