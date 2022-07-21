@@ -20,9 +20,8 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import {UserListHead} from '../sections/@dashboard/user';
-import CreateForm from "../components/room/CreateForm";
-import EditForm from "../components/room/EditForm";
-import {getContracts, getDoms} from "../connector/fetch";
+import {getContracts, getRooms, getStudents} from "../connector/fetch";
+import CreateForm from "../components/contract/CreateForm";
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +45,10 @@ export default function Contracts() {
 
     const [listContracts, setListContracts] = useState([]);
 
+    const [listStudents, setListStudents] = useState([]);
+
+    const [listRooms, setListRooms] = useState([]);
+
     const [openCreateModal, setOpenCreateModal] = useState(false);
     
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -53,6 +56,21 @@ export default function Contracts() {
     const [reLoad, setReLoad] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        (async function () {
+            const students = await getStudents(0, 50)
+            const format = students.map((el) => ({
+                value: el.id, label: el.user.full_name
+            }))
+            setListStudents(format)
+            const rooms = await getRooms(0, 50)
+            const format2 = rooms.map((el) => ({
+                value: el.ID, label: el.Name
+            }))
+            setListRooms(format2)
+        })()
+    }, []);
 
     useEffect(() => {
         (async function () {
@@ -101,7 +119,7 @@ export default function Contracts() {
                                 />
                                 <TableBody>
                                     {listContracts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                        const {id, student, room, startDate, endDate, pricePerMonth,status} = row;
+                                        const {id, student, room, start_date, end_date, price_per_month, status} = row;
 
                                         return (
                                             <TableRow
@@ -112,19 +130,19 @@ export default function Contracts() {
                                                 <TableCell>{index}</TableCell>
                                                 <TableCell>
                                                     <Typography variant="subtitle2" noWrap>
-                                                        {student.name}
+                                                        {student?.user?.full_name}
                                                     </Typography>
                                                 </TableCell>
-                                                <TableCell align="left">{room.name}</TableCell>
-                                                <TableCell align="left">{startDate}</TableCell>
-                                                <TableCell align="left">{endDate}</TableCell>
-                                                <TableCell align="left">{pricePerMonth}</TableCell>
+                                                <TableCell align="left">{room.Name}</TableCell>
+                                                <TableCell align="left">{start_date}</TableCell>
+                                                <TableCell align="left">{end_date}</TableCell>
+                                                <TableCell align="left">{price_per_month}</TableCell>
                                                 <TableCell align="left">{status}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
-                                                        <Button variant="contained" onClick={() => navigate('/dashboard/invoices')}>View Invoice</Button>
+                                                        <Button variant="contained" onClick={() => navigate('/dashboard/invoices')}>Invoice</Button>
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
@@ -149,6 +167,14 @@ export default function Contracts() {
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
+
+                    <CreateForm
+                        rooms={listRooms}
+                        students={listStudents}
+                        openCreateModal={openCreateModal}
+                        setOpenCreateModal={setOpenCreateModal}
+                        reLoad={reLoad}
+                        setReLoad={setReLoad}/>
                 </Card>
             </Container>
         </Page>

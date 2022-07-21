@@ -7,6 +7,12 @@ export const getHosts = async (offset = 0, limit = 50) => {
     })
 }
 
+export const getStudents = async (offset = 0, limit = 50) => {
+    return await get(consts.getStudents, {
+        offset: offset, limit: limit,
+    })
+}
+
 export const getDoms = async (offset = 0, limit = 50) => {
     return await get(consts.getDoms, {
         offset: offset, limit: limit
