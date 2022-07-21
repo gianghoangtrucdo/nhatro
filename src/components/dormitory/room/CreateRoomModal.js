@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
 // mui
 import {Alert, Button, TextField} from '@mui/material';
-import ReactSelect from "react-select";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Snackbar from '@mui/material/Snackbar';
-// imports
-import * as API from '../../constants/index';
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as API from '../../../constants/index';
 
 const style = {
     position: 'absolute',
@@ -31,15 +29,10 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
-    const [openNoti, setOpenNoti] = useState(false);
+export default function CreateRoomModal({domId, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
+    const [isOpen, setOpen] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
-        defaultValues: {
-            name: room.Name,
-            max_student: room.MaxStudent,
-            dom: {value: room.Dom.id, label: room.Dom.name}
-        },
         resolver: yupResolver(schema)
     });
 
@@ -47,19 +40,18 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
         const model = {
             name: data.name,
             maxStudent: data.max_student,
-            domID: data.dom.value,
-            room_id: room.ID
+            domID: parseInt(domId, 10)
         }
-        fetch(API.updateRoom, {
-            method: 'PATCH',
+        fetch(API.createRoom, {
+            method: 'POST',
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         }).then((res) => res.json())
             .then((res) => {
-                setOpenNoti(true);
-                setOpenUpdateModal(-1);
+                setOpen(true);
+                setOpenCreateModal(false);
                 setReLoad(!reLoad);
             });
     };
@@ -69,14 +61,14 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
             <form>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Modal
-                        open={openUpdateModal === room.ID}
-                        onClose={() => setOpenUpdateModal(-1)}
+                        open={openCreateModal}
+                        onClose={() => setOpenCreateModal(false)}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
                         <Box sx={style}>
                             <Stack direction="column" spacing={4}>
-                                <h2>Edit Room</h2>
+                                <h2>Create new Room</h2>
                                 <Controller
                                     name="name"
                                     control={control}
@@ -96,15 +88,6 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
                                                    helperText={errors.max_student?.message}/>
                                     )}
                                 />
-                                <section>Choose domitory</section>
-                                <Controller
-                                    name="dom"
-                                    control={control}
-                                    render={({field}) => <ReactSelect
-                                        {...field}
-                                        options={doms}
-                                    />}
-                                />
                                 <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                     Submit
                                 </Button>
@@ -119,10 +102,10 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
                 position: 'absolute',
                 top: '0%',
                 left: '0%',
-            }} open={openNoti} autoHideDuration={6000} onClose={() => setOpenNoti(false)}>
-                <Alert onClose={() => setOpenNoti(false)} severity="success"
+            }} open={isOpen} autoHideDuration={6000} onClose={() => setOpen(false)}>
+                <Alert onClose={() => setOpen(false)} severity="success"
                        sx={{width: '100%', background: '#4caf50', color: '#fff'}}>
-                    Update successfully
+                    Create successfully
                 </Alert>
             </Snackbar>
         </>

@@ -31,7 +31,7 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function CreateRoomModal({domId, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
+export default function CreateRoomModal({doms, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
     const [isOpen, setOpen] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
@@ -42,7 +42,7 @@ export default function CreateRoomModal({domId, openCreateModal, setOpenCreateMo
         const model = {
             name: data.name,
             maxStudent: data.max_student,
-            domID: parseInt(domId, 10)
+            domID: data.dom.value
         }
         fetch(API.createRoom, {
             method: 'POST',
@@ -89,6 +89,15 @@ export default function CreateRoomModal({domId, openCreateModal, setOpenCreateMo
                                                    error={Boolean(errors.max_student)}
                                                    helperText={errors.max_student?.message}/>
                                     )}
+                                />
+                                <section>Choose domitory</section>
+                                <Controller
+                                    name="dom"
+                                    control={control}
+                                    render={({field}) => <ReactSelect
+                                        {...field}
+                                        options={doms}
+                                    />}
                                 />
                                 <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                     Submit

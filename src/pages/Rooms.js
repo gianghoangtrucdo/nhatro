@@ -1,4 +1,3 @@
-import {filter} from 'lodash';
 import {useEffect, useState} from 'react';
 import {Link as RouterLink, useNavigate, useParams} from 'react-router-dom';
 // material
@@ -15,22 +14,23 @@ import {
     Container,
     Typography,
     TableContainer,
-    TablePagination, TableHead,
+    TablePagination,
 } from '@mui/material';
 // components
-import Page from '../Page';
-import Scrollbar from '../Scrollbar';
-import Iconify from '../Iconify';
-import {UserListHead} from '../../sections/@dashboard/user';
-import {getRoomsByDomId} from "../../connector/fetch";
-import CreateRoomModal from "./room/CreateRoomModal";
-import UpdateRoomModal from "./room/UpdateRoomModal";
+import Page from "../components/Page";
+import Scrollbar from "../components/Scrollbar";
+import {UserListHead} from "../sections/@dashboard/user";
+import CreateRoomModal from "../components/room/CreateRoomModal";
+import UpdateRoomModal from "../components/room/UpdateRoomModal";
+import {getDoms, getRooms} from "../connector/fetch";
+import Iconify from "../components/Iconify";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
     {id: 'no', label: 'No'},
     {id: 'name', label: 'Room name', alignRight: false},
+    {id: 'doom', label: 'Doom name', alignRight: false},
     {id: 'maxStudent', label: 'Max student per room', alignRight: false},
     {id: 'option', label: 'Option', alignRight: false},
 ];
@@ -44,6 +44,8 @@ export default function Rooms() {
 
     const [listRooms, setListRooms] = useState([]);
 
+    const [listDoms, setListDoms] = useState([]);
+
     const [openCreateModal, setOpenCreateModal] = useState(false);
 
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -52,14 +54,22 @@ export default function Rooms() {
 
     const [reLoad, setReLoad] = useState(false);
 
-    const {id} = useParams();
-
     useEffect(() => {
         (async function () {
-            const rooms = await getRoomsByDomId(0, 50, id)
+            const rooms = await getRooms(0, 50);
             setListRooms(rooms);
         })()
     }, [reLoad]);
+
+    useEffect(() => {
+        (async function () {
+            const doms = await getDoms(0, 50)
+            const formatDoms = doms.map((el) => ({
+                value: el.id, label: el.name
+            }))
+            setListDoms(formatDoms);
+        })()
+    }, []);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -101,7 +111,8 @@ export default function Rooms() {
                                 />
                                 <TableBody>
                                     {listRooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                        const {ID, Name, MaxStudent} = row;
+                                        const {ID, Name, MaxStudent, Dom} = row;
+                                        const domName = Dom.name;
 
                                         return (
                                             <TableRow
@@ -115,10 +126,11 @@ export default function Rooms() {
                                                         {Name}
                                                     </Typography>
                                                 </TableCell>
+                                                <TableCell align="left">{domName}</TableCell>
                                                 <TableCell align="left">{MaxStudent}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
+                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(ID)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
                                                         <Button variant="contained" onClick={() => navigate('/dashboard/contracts')}>View Contract</Button>
                                                     </Stack>
@@ -126,6 +138,7 @@ export default function Rooms() {
                                                 <TableCell>
                                                     <UpdateRoomModal
                                                         room={row}
+                                                        doms={listDoms}
                                                         openUpdateModal={openUpdateModal}
                                                         setOpenUpdateModal={setOpenUpdateModal}
                                                         reLoad={reLoad}
@@ -155,7 +168,7 @@ export default function Rooms() {
                     />
 
                     <CreateRoomModal
-                        domId={id}
+                        doms={listDoms}
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}

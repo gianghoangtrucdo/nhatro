@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
 // mui
 import {Alert, Button, TextField} from '@mui/material';
-import ReactSelect from "react-select";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Snackbar from '@mui/material/Snackbar';
-// imports
-import * as API from '../../constants/index';
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as API from '../../../constants/index';
 
 const style = {
     position: 'absolute',
@@ -31,27 +29,21 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
+export default function UpdateRoomModal({room, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
     const [openNoti, setOpenNoti] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
-        defaultValues: {
-            name: room.Name,
-            max_student: room.MaxStudent,
-            dom: {value: room.Dom.id, label: room.Dom.name}
-        },
         resolver: yupResolver(schema)
     });
 
     const onSubmit = (data) => {
         const model = {
             name: data.name,
-            maxStudent: data.max_student,
-            domID: data.dom.value,
-            room_id: room.ID
+            max_student: data.max_student,
+            dom_id: 1
         }
-        fetch(API.updateRoom, {
-            method: 'PATCH',
+        fetch(API.createUser, {
+            method: 'POST',
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -59,7 +51,7 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
         }).then((res) => res.json())
             .then((res) => {
                 setOpenNoti(true);
-                setOpenUpdateModal(-1);
+                setOpenCreateModal(false);
                 setReLoad(!reLoad);
             });
     };
@@ -69,8 +61,8 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
             <form>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Modal
-                        open={openUpdateModal === room.ID}
-                        onClose={() => setOpenUpdateModal(-1)}
+                        open={openUpdateModal}
+                        onClose={() => setOpenUpdateModal(false)}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
@@ -95,15 +87,6 @@ export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpd
                                                    error={Boolean(errors.max_student)}
                                                    helperText={errors.max_student?.message}/>
                                     )}
-                                />
-                                <section>Choose domitory</section>
-                                <Controller
-                                    name="dom"
-                                    control={control}
-                                    render={({field}) => <ReactSelect
-                                        {...field}
-                                        options={doms}
-                                    />}
                                 />
                                 <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                     Submit

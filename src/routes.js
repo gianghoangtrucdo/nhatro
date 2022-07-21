@@ -9,8 +9,9 @@ import DashboardApp from './pages/DashboardApp';
 import Doms from "./pages/Doms";
 import ViewAndUpdateDormitory from "./components/dormitory/ViewAndUpdateDormitory";
 import Contracts from "./pages/Contracts";
-import Rooms from "./components/dormitory/Rooms";
+import DomRooms from "./components/dormitory/Rooms";
 import Invoices from "./pages/Invoices";
+import Rooms from "./pages/Rooms";
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,7 @@ export default function Router() {
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'doms', element: <Doms /> },
+        { path: 'dom/rooms', element: <DomRooms /> },
         { path: 'rooms', element: <Rooms /> },
         { path: 'contracts', element: <Contracts /> },
         { path: 'invoices', element: <Invoices /> },
