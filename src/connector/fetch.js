@@ -3,14 +3,24 @@ import * as consts from "../constants/index"
 
 export const getHosts = async (offset = 0, limit = 50) => {
     return await get(consts.getHosts, {
-        offset: offset,
-        limit: limit,
+        offset: offset, limit: limit,
+    })
+}
+
+export const getDoms = async (offset = 0, limit = 50) => {
+    return await get(consts.getDoms, {
+        offset: offset, limit: limit
+    })
+}
+
+export const getDom = async (id) => {
+    return await get(consts.getDom, {
+        id: id
     })
 }
 
 const defaultHeaders = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Accept: 'application/json', 'Content-Type': 'application/json',
 };
 
 const request = async (url, method, body, customHeaders = {}) => {
@@ -19,13 +29,11 @@ const request = async (url, method, body, customHeaders = {}) => {
         endpoint = config.apiUrl + url;
     }
     const headers = {
-        ...defaultHeaders,
-        ...customHeaders,
+        ...defaultHeaders, ...customHeaders,
     };
 
     const fetchOpts = {
-        method,
-        headers,
+        method, headers,
     };
 
     if (method !== 'HEAD' && method !== 'GET') {
@@ -45,10 +53,7 @@ const request = async (url, method, body, customHeaders = {}) => {
     const json = await response.json();
 
     const logData = {
-        method,
-        url: endpoint,
-        status: response.status,
-        responseTime,
+        method, url: endpoint, status: response.status, responseTime,
     };
 
     if (response.status < 200 || response.status >= 300) {
@@ -72,14 +77,8 @@ export const get = (endpoint, params, headers = {}) => {
     return request(url, 'GET', null, headers);
 };
 
-export const post = (endpoint, body, headers = {}) => (
-    request(endpoint, 'POST', body, headers)
-);
+export const post = (endpoint, body, headers = {}) => (request(endpoint, 'POST', body, headers));
 
-export const put = (endpoint, body, headers = {}) => (
-    request(endpoint, 'PUT', body, headers)
-);
+export const put = (endpoint, body, headers = {}) => (request(endpoint, 'PUT', body, headers));
 
-export const del = (endpoint, body, headers = {}) => (
-    request(endpoint, 'DELETE', body, headers)
-);
+export const del = (endpoint, body, headers = {}) => (request(endpoint, 'DELETE', body, headers));

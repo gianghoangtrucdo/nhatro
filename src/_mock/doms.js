@@ -8,7 +8,7 @@ const Data = [
         nb_room: 30,
         createdAt: '',
         updatedAt: '',
-        hosts: {
+        host: {
             id: 'sonle123456',
             full_name: 'Do Linh'
         },
@@ -22,7 +22,7 @@ const Data = [
         nb_room: 10,
         createdAt: '',
         updatedAt: '',
-        hosts: {
+        host: {
             id: 'sonle123456',
             full_name: 'Son Le'
         },
@@ -36,7 +36,7 @@ const Data = [
         nb_room: 5,
         createdAt: '',
         updatedAt: '',
-        hosts: {
+        host: {
             id: 'sonle123456',
             full_name: 'Giang Do'
         },

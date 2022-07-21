@@ -5,5 +5,8 @@ module.exports = Object.freeze({
     users: `${serverAddress}/user/list?offset=0&limit=100`,
     getHosts: `${serverAddress}/user/host`,
     createUser: `${serverAddress}/user/create`,
-    updateUser: `${serverAddress}/user/update`
+    updateUser: `${serverAddress}/user/update`,
+
+    getDoms: `${serverAddress}/dom/list`,
+    getDom: `${serverAddress}/dom`,
 });
