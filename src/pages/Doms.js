@@ -20,7 +20,7 @@ const Doms = () => {
             const doms = await getDoms(0, 50)
             setDoms(doms);
         })()
-    }, [])
+    }, [reLoad])
 
     return (<Page title="Dashboard: Dormitory">
         <Container>
@@ -40,7 +40,7 @@ const Doms = () => {
                 </Button>
             </Stack>
 
-            <ProductList products={doms}/>
+            <ProductList products={doms} reload={reLoad} setReload={setReLoad}/>
             <ProductCartWidget/>
 
             <CreateNewDormitory

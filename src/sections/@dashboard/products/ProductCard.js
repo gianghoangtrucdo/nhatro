@@ -5,8 +5,8 @@ import {Box, Card, Link, Typography, Stack, Button} from '@mui/material';
 import {styled} from '@mui/material/styles';
 // components
 import Label from '../../../components/Label';
-import {ColorPreview} from '../../../components/color-utils';
-import palette from "../../../theme/palette";
+import EditForm from "../../../components/dormitory/EditForm";
+import {useState} from "react";
 
 // ----------------------------------------------------------------------
 
@@ -24,10 +24,11 @@ ShopProductCard.propTypes = {
     product: PropTypes.object,
 };
 
-export default function ShopProductCard({product}) {
-    const {id, name, cover, nb_room, address, status, host} = product;
+export default function ShopProductCard({product, reload, setReload}) {
+    const {id, name, nb_room, address, status, host} = product;
     const hostName = host.user?.full_name;
     const navigate = useNavigate();
+    const [openModal, setOpenModal] = useState(false);
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -94,11 +95,18 @@ export default function ShopProductCard({product}) {
                 </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={2}>
-                    <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
+                    <Button variant="contained" onClick={() => setOpenModal(true)}>Edit</Button>
                     <Button variant="contained">Delete</Button>
                     <Button variant="contained" onClick={() => navigate('/dashboard/dom/' + id)}>Detail</Button>
                 </Stack>
             </Stack>
+
+            <EditForm
+                item={product}
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                reLoad={reload}
+                setReLoad={setReload}/>
         </Card>
     );
 }
