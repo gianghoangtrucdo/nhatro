@@ -18,13 +18,13 @@ import {
     TablePagination, TableHead,
 } from '@mui/material';
 // components
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import Iconify from '../components/Iconify';
-import {UserListHead} from '../sections/@dashboard/user';
-import CreateRoomModal from "../components/room/CreateRoomModal";
-import UpdateRoomModal from "../components/room/UpdateRoomModal";
-import {getRoomsByDomId} from "../connector/fetch";
+import Page from '../Page';
+import Scrollbar from '../Scrollbar';
+import Iconify from '../Iconify';
+import {UserListHead} from '../../sections/@dashboard/user';
+import CreateRoomModal from "../room/CreateRoomModal";
+import UpdateRoomModal from "../room/UpdateRoomModal";
+import {getRoomsByDomId} from "../../connector/fetch";
 
 // ----------------------------------------------------------------------
 

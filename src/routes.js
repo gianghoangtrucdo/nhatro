@@ -9,7 +9,7 @@ import DashboardApp from './pages/DashboardApp';
 import Doms from "./pages/Doms";
 import ViewAndUpdateDormitory from "./components/dormitory/ViewAndUpdateDormitory";
 import Contracts from "./pages/Contracts";
-import Rooms from "./pages/Rooms";
+import Rooms from "./components/dormitory/Rooms";
 import Invoices from "./pages/Invoices";
 
 // ----------------------------------------------------------------------

@@ -12,6 +12,7 @@ module.exports = Object.freeze({
     createDom: `${serverAddress}/dom/create`,
     updateDom: `${serverAddress}/dom/update`,
 
+    getRooms: `${serverAddress}/room/list`,
     createRoom: `${serverAddress}/room/create`,
-    getRoomByDomId: `${serverAddress}/room/list`,
+    getRoomByDomId: `${serverAddress}/dom/room/list`,
 });

@@ -5,7 +5,7 @@ import {Button, Container, Stack, Typography} from '@mui/material';
 // components
 import Page from '../components/Page';
 import {ProductList, ProductCartWidget} from '../sections/@dashboard/products';
-import CreateNewDormitory from "../components/dormitory/CreateNewDormitory";
+import CreateForm from "../components/dormitory/CreateForm";
 import Iconify from "../components/Iconify";
 
 import {getDoms} from "../connector/fetch";
@@ -43,7 +43,7 @@ const Doms = () => {
             <ProductList products={doms} reload={reLoad} setReload={setReLoad}/>
             <ProductCartWidget/>
 
-            <CreateNewDormitory
+            <CreateForm
                 openCreateModal={openCreateModal}
                 setOpenCreateModal={setOpenCreateModal}
                 reLoad={reLoad}

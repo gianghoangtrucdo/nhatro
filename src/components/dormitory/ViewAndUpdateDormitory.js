@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 import ShopProductCard from "../../sections/@dashboard/products/ProductCard";
 import {Container, Grid} from "@mui/material";
 import Page from "../Page";
-import Rooms from "../../pages/Rooms";
+import Rooms from "./Rooms";
 import {getDom} from "../../connector/fetch";
 
 const ViewAndUpdateDormitory = () => {

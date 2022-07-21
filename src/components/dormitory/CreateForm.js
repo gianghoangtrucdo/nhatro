@@ -32,7 +32,7 @@ const schema = yup.object({
     nb_room: yup.number().positive().integer().required('Number room is required'),
 }).required();
 
-export default function CreateNewDormitory({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
+export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
     const [isOpen, setOpen] = useState(false);
     const [hosts, setHosts] = useState([]);
 
