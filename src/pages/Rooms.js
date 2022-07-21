@@ -18,13 +18,12 @@ import {
     TablePagination, TableHead,
 } from '@mui/material';
 // components
-import * as API from '../constants/index';
+import * as api from '../constants/index';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead} from '../sections/@dashboard/user';
-import Data from '../_mock/rooms';
 import CreateRoomModal from "../components/room/CreateRoomModal";
 import UpdateRoomModal from "../components/room/UpdateRoomModal";
 import {applySortFilter, getComparator} from "../sections/@dashboard/common";
@@ -41,7 +40,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function Rooms() {
+export default function Rooms({ rooms }) {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -52,9 +51,10 @@ export default function Rooms() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [listUsers, setListUsers] = useState([]);
+    const [listRooms, setListRooms] = useState([]);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
+
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const navigate = useNavigate();
@@ -62,11 +62,7 @@ export default function Rooms() {
     const [reLoad, setReLoad] = useState(false);
 
     useEffect(() => {
-        // fetch(API.users)
-        //     .then(res => res.json())
-        //     .then((res) => {
-        //         setListUsers(res);
-        //     });
+        setListRooms(rooms);
     }, [reLoad]);
 
     const handleRequestSort = (event, property) => {
@@ -84,9 +80,9 @@ export default function Rooms() {
         setPage(0);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Data.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listRooms.length) : 0;
 
-    const filteredUsers = applySortFilter(Data, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(listRooms, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
@@ -116,7 +112,7 @@ export default function Rooms() {
                                     order={order}
                                     orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
-                                    rowCount={Data.length}
+                                    rowCount={listRooms.length}
                                     onRequestSort={handleRequestSort}
                                     isShowHeadCheckbox={false}
                                 />
@@ -171,7 +167,7 @@ export default function Rooms() {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={Data.length}
+                        count={listRooms.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
