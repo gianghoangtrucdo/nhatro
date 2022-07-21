@@ -24,7 +24,8 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { id, name, cover, nb_room, address, status } = product;
+  const { id, name, cover, nb_room, address, status, host } = product;
+  const hostName = host.user?.full_name;
 
   return (
     <Card>
@@ -58,7 +59,7 @@ export default function ShopProductCard({ product }) {
           <Typography variant="body2">
             Hostname:
             <Typography variant="subtitle2">
-                Dummy host name
+              {hostName}
             </Typography>
           </Typography>
           <Typography variant="body2">
