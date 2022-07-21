@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import Data from '../../_mock/doms';
 import ShopProductCard from "../../sections/@dashboard/products/ProductCard";
 import {Container, Grid} from "@mui/material";
 import Page from "../Page";
@@ -10,6 +9,7 @@ import {getDom} from "../../connector/fetch";
 const ViewAndUpdateDormitory = () => {
     const {id} = useParams();
     const [dom, setDom] = useState(undefined);
+    const [rooms, setRooms] = useState([]);
 
     useEffect(() => {
         (async function () {
@@ -26,7 +26,7 @@ const ViewAndUpdateDormitory = () => {
                         <ShopProductCard product={dom}/>
                     </Grid>
                     <Grid item xs={12}>
-                        <Rooms rooms={dom?.rooms}/>
+                        <Rooms />
                     </Grid>
                 </Grid>
             </Container>

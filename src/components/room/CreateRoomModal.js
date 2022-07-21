@@ -12,6 +12,7 @@ import Snackbar from '@mui/material/Snackbar';
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as API from '../../constants/index';
+import {resetFirstInputPolyfill} from "web-vitals/dist/modules/lib/polyfills/firstInputPolyfill";
 
 const style = {
     position: 'absolute',
@@ -30,8 +31,8 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function CreateRoomModal({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
-    const [openNoti, setOpenNoti] = useState(false);
+export default function CreateRoomModal({domId, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
+    const [isOpen, setOpen] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
@@ -40,10 +41,10 @@ export default function CreateRoomModal({openCreateModal, setOpenCreateModal, re
     const onSubmit = (data) => {
         const model = {
             name: data.name,
-            max_student: data.max_student,
-            dom_id: 1
+            maxStudent: data.max_student,
+            domID: parseInt(domId, 10)
         }
-        fetch(API.createUser, {
+        fetch(API.createRoom, {
             method: 'POST',
             body: JSON.stringify(model),
             headers: {
@@ -51,7 +52,7 @@ export default function CreateRoomModal({openCreateModal, setOpenCreateModal, re
             }
         }).then((res) => res.json())
             .then((res) => {
-                setOpenNoti(true);
+                setOpen(true);
                 setOpenCreateModal(false);
                 setReLoad(!reLoad);
             });
@@ -103,8 +104,8 @@ export default function CreateRoomModal({openCreateModal, setOpenCreateModal, re
                 position: 'absolute',
                 top: '0%',
                 left: '0%',
-            }} open={openNoti} autoHideDuration={6000} onClose={() => setOpenNoti(false)}>
-                <Alert onClose={() => setOpenNoti(false)} severity="success"
+            }} open={isOpen} autoHideDuration={6000} onClose={() => setOpen(false)}>
+                <Alert onClose={() => setOpen(false)} severity="success"
                        sx={{width: '100%', background: '#4caf50', color: '#fff'}}>
                     Create successfully
                 </Alert>

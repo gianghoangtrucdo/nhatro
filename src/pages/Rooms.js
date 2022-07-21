@@ -1,6 +1,6 @@
 import {filter} from 'lodash';
 import {useEffect, useState} from 'react';
-import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {Link as RouterLink, useNavigate, useParams} from 'react-router-dom';
 // material
 import {
     Card,
@@ -18,36 +18,27 @@ import {
     TablePagination, TableHead,
 } from '@mui/material';
 // components
-import * as api from '../constants/index';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
-import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead} from '../sections/@dashboard/user';
 import CreateRoomModal from "../components/room/CreateRoomModal";
 import UpdateRoomModal from "../components/room/UpdateRoomModal";
-import {applySortFilter, getComparator} from "../sections/@dashboard/common";
+import {getRoomsByDomId} from "../connector/fetch";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
     {id: 'no', label: 'No'},
     {id: 'name', label: 'Room name', alignRight: false},
-    {id: 'dom', label: 'Doom name', alignRight: false},
     {id: 'maxStudent', label: 'Max student per room', alignRight: false},
     {id: 'option', label: 'Option', alignRight: false},
 ];
 
 // ----------------------------------------------------------------------
 
-export default function Rooms({ rooms }) {
+export default function Rooms() {
     const [page, setPage] = useState(0);
-
-    const [order, setOrder] = useState('asc');
-
-    const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -61,15 +52,14 @@ export default function Rooms({ rooms }) {
 
     const [reLoad, setReLoad] = useState(false);
 
-    useEffect(() => {
-        setListRooms(rooms);
-    }, [reLoad]);
+    const {id} = useParams();
 
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
+    useEffect(() => {
+        (async function () {
+            const rooms = await getRoomsByDomId(0, 50, id)
+            setListRooms(rooms);
+        })()
+    }, [reLoad]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -81,10 +71,6 @@ export default function Rooms({ rooms }) {
     };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listRooms.length) : 0;
-
-    const filteredUsers = applySortFilter(listRooms, getComparator(order, orderBy), filterName);
-
-    const isUserNotFound = filteredUsers.length === 0;
 
     return (
         <Page title="Rooms">
@@ -109,31 +95,27 @@ export default function Rooms({ rooms }) {
                         <TableContainer sx={{minWidth: 800}}>
                             <Table>
                                 <UserListHead
-                                    order={order}
-                                    orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
                                     rowCount={listRooms.length}
-                                    onRequestSort={handleRequestSort}
                                     isShowHeadCheckbox={false}
                                 />
                                 <TableBody>
-                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                        const {id, name, max_student} = row;
+                                    {listRooms.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                        const {ID, Name, MaxStudent} = row;
 
                                         return (
                                             <TableRow
                                                 hover
-                                                key={id}
+                                                key={ID}
                                                 tabIndex={-1}
                                             >
                                                 <TableCell>{index}</TableCell>
                                                 <TableCell>
                                                     <Typography variant="subtitle2" noWrap>
-                                                        {name}
+                                                        {Name}
                                                     </Typography>
                                                 </TableCell>
-                                                <TableCell/>
-                                                <TableCell align="left">{max_student}</TableCell>
+                                                <TableCell align="left">{MaxStudent}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
@@ -150,16 +132,6 @@ export default function Rooms({ rooms }) {
                                         </TableRow>
                                     )}
                                 </TableBody>
-
-                                {isUserNotFound && (
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell align="center" colSpan={6} sx={{py: 3}}>
-                                                <SearchNotFound searchQuery={filterName}/>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                )}
                             </Table>
                         </TableContainer>
                     </Scrollbar>
@@ -175,6 +147,7 @@ export default function Rooms({ rooms }) {
                     />
 
                     <CreateRoomModal
+                        domId={id}
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}

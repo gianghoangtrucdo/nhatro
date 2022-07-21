@@ -19,6 +19,14 @@ export const getDom = async (id) => {
     })
 }
 
+export const getRoomsByDomId = async (offset = 0, limit = 50, domId) => {
+    return await get(consts.getRoomByDomId, {
+        offset: offset,
+        limit: limit,
+        doom_id: domId
+    })
+}
+
 const defaultHeaders = {
     Accept: 'application/json', 'Content-Type': 'application/json',
 };
