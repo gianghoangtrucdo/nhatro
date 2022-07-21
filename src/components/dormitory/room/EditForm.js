@@ -29,21 +29,26 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function UpdateRoomModal({room, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
+export default function EditForm({domId, room, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
     const [openNoti, setOpenNoti] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
+        defaultValues: {
+            name: room.Name,
+            max_student: room.MaxStudent
+        },
         resolver: yupResolver(schema)
     });
 
     const onSubmit = (data) => {
         const model = {
             name: data.name,
-            max_student: data.max_student,
-            dom_id: 1
+            maxStudent: data.max_student,
+            domID: parseInt(domId, 10),
+            room_id: room.ID
         }
-        fetch(API.createUser, {
-            method: 'POST',
+        fetch(API.updateRoom, {
+            method: 'PATCH',
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -51,7 +56,7 @@ export default function UpdateRoomModal({room, openUpdateModal, setOpenUpdateMod
         }).then((res) => res.json())
             .then((res) => {
                 setOpenNoti(true);
-                setOpenCreateModal(false);
+                setOpenUpdateModal(-1);
                 setReLoad(!reLoad);
             });
     };
@@ -61,8 +66,8 @@ export default function UpdateRoomModal({room, openUpdateModal, setOpenUpdateMod
             <form>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Modal
-                        open={openUpdateModal}
-                        onClose={() => setOpenUpdateModal(false)}
+                        open={openUpdateModal === room.ID}
+                        onClose={() => setOpenUpdateModal(-1)}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >

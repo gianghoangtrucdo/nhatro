@@ -24,8 +24,8 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import {UserListHead} from '../sections/@dashboard/user';
-import CreateRoomModal from "../components/room/CreateRoomModal";
-import UpdateRoomModal from "../components/room/UpdateRoomModal";
+import CreateForm from "../components/room/CreateForm";
+import EditForm from "../components/room/EditForm";
 import {applySortFilter, getComparator} from "../sections/@dashboard/common";
 import Data from "../_mock/contract";
 
@@ -181,13 +181,13 @@ export default function Invoices() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateRoomModal
+                    <CreateForm
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}
                         setReLoad={setReLoad}/>
 
-                    <UpdateRoomModal
+                    <EditForm
                         openUpdateModal={openUpdateModal}
                         setOpenUpdateModal={setOpenUpdateModal}
                         reLoad={reLoad}

@@ -31,7 +31,7 @@ const schema = yup.object({
     max_student: yup.number().positive().integer(),
 }).required();
 
-export default function UpdateRoomModal({room, doms, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
+export default function EditForm({room, doms, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
     const [openNoti, setOpenNoti] = useState(false);
 
     const {handleSubmit, control, formState: {errors}} = useForm({

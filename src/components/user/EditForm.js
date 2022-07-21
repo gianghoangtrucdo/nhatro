@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 // mui
 import {Alert, Button, TextField} from '@mui/material';
-import ReactSelect from "react-select";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Snackbar from '@mui/material/Snackbar';
+import ReactSelect from "react-select";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as API from '../../constants/index';
@@ -26,43 +26,52 @@ const style = {
 };
 
 const schema = yup.object({
-    username: yup.string().required().max(100, 'Max length is 100 characters'),
     full_name: yup.string().required().max(100, 'Max length is 100 characters'),
     password: yup.string().min(6, 'Min length is 6').max(20, 'Max length is 20 characters'),
     address: yup.string().required().max(500, 'Max length is 500 characters'),
-    student_school: yup.string().max(500, 'Max length is 500 characters'),
-    student_year: yup.number().positive().integer(),
+    student_school: yup.string().required().max(500, 'Max length is 500 characters'),
+    student_year: yup.number().positive().integer().required(),
 }).required();
 
-export default function CreateUserModal({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
+export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpdateModal, reLoad, setReLoad}) {
+    const [noti, setNoti] = useState();
     const [openNoti, setOpenNoti] = useState(false);
-    const [openFields, setOpenFields] = useState(false);
 
-    const {handleSubmit, control, formState: {errors}} = useForm({
+    const {handleSubmit, control, formState:{ errors }} = useForm({
+        defaultValues: {
+            username: initialValue.username,
+            full_name: initialValue.full_name,
+            address: initialValue.address,
+            account_status: { value: initialValue.account_status, label: initialValue.account_status },
+            student_year: initialValue.student_year,
+            student_school: initialValue.student_school,
+            id: initialValue.id
+        },
         resolver: yupResolver(schema)
     });
 
     const onSubmit = (data) => {
         const model = {
-            username: data.username,
+            id: initialValue.id,
             password: data.password,
             full_name: data.full_name,
             address: data.address,
-            role: data.role.value,
             account_status: data.account_status.value,
             student_year: parseInt(data.student_year, 10),
-            student_school: data.student_school
+            student_school: data.student_school,
+            role: initialValue.role
         }
-        fetch(API.createUser, {
-            method: 'POST',
+        fetch(API.updateUser, {
+            method: 'PATCH',
             body: JSON.stringify(model),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         }).then((res) => res.json())
             .then((res) => {
+                setNoti(res);
                 setOpenNoti(true);
-                setOpenCreateModal(false);
+                setIsOpenUpdateModal(false);
                 setReLoad(!reLoad);
             });
     };
@@ -72,21 +81,19 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
             <form>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Modal
-                        open={openCreateModal}
-                        onClose={() => setOpenCreateModal(false)}
+                        open={isOpenUpdateModal}
+                        onClose={() => setIsOpenUpdateModal(false)}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
                         <Box sx={style}>
                             <Stack direction="column" spacing={4}>
-                                <h2>Create new User</h2>
+                                <h2>Update User</h2>
                                 <Controller
                                     name="username"
                                     control={control}
                                     render={({field: {onChange, value}}) => (
-                                        <TextField fullWidth onChange={onChange} value={value} label="Input username"
-                                                   error={Boolean(errors.username)}
-                                                   helperText={errors.username?.message}/>
+                                        <TextField fullWidth onChange={onChange} value={value} label="Input username" disabled/>
                                     )}
                                 />
                                 <Controller
@@ -94,8 +101,7 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
                                     control={control}
                                     render={({field: {onChange, value}}) => (
                                         <TextField fullWidth onChange={onChange} value={value} label="Input full name"
-                                                   error={Boolean(errors.full_name)}
-                                                   helperText={errors.full_name?.message}/>
+                                                   error={Boolean(errors.full_name)} helperText={errors.full_name?.message}/>
                                     )}
                                 />
                                 <Controller
@@ -103,9 +109,8 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
                                     control={control}
                                     render={({field: {onChange, value}}) => (
                                         <TextField fullWidth type="password" onChange={onChange} value={value}
-                                                   label="Input password"
-                                                   error={Boolean(errors.password)}
-                                                   helperText={errors.password?.message}/>
+                                                   label="Input new password"
+                                                   error={Boolean(errors.password)} helperText={errors.password?.message}/>
                                     )}
                                 />
                                 <Controller
@@ -113,62 +118,39 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
                                     control={control}
                                     render={({field: {onChange, value}}) => (
                                         <TextField fullWidth onChange={onChange} value={value} label="Input address"
-                                                   error={Boolean(errors.address)}
-                                                   helperText={errors.address?.message}/>
+                                                   error={Boolean(errors.address)} helperText={errors.address?.message}/>
                                     )}
                                 />
-                                <section>Choose account status</section>
                                 <Controller
                                     name="account_status"
                                     control={control}
-                                    render={({field}) => <ReactSelect
+                                    render={({ field }) => <ReactSelect
                                         {...field}
                                         options={[
-                                            {value: "active", label: "Active"},
-                                            {value: "inactive", label: "Inactive"}
+                                            { value: "active", label: "active" },
+                                            { value: "inactive", label: "inactive" }
                                         ]}
+                                        placeholder="Input account status"
                                     />}
                                 />
-                                <section>Choose role</section>
                                 <Controller
-                                    name="role"
+                                    name="student_school"
                                     control={control}
-                                    render={({field: {onChange}}) => <ReactSelect
-                                        options={[
-                                            {value: "host", label: "Host"},
-                                            {value: "student", label: "Student"}
-                                        ]}
-                                        onChange={(value) => {
-                                            onChange(value)
-                                            if (value.value === "student") setOpenFields(true)
-                                            else setOpenFields(false)
-                                        }}
-                                    />}
+                                    render={({field: {onChange, value}}) => (
+                                        <TextField fullWidth onChange={onChange} value={value}
+                                                   label="Input student school"
+                                                   error={Boolean(errors.student_school)} helperText={errors.student_school?.message}/>
+                                    )}
                                 />
-                                {openFields &&
-                                    <>
-                                        <Controller
-                                            name="student_school"
-                                            control={control}
-                                            render={({field: {onChange, value}}) => (
-                                                <TextField fullWidth onChange={onChange} value={value}
-                                                           label="Input student school"
-                                                           error={Boolean(errors.student_school)}
-                                                           helperText={errors.student_school?.message}/>
-                                            )}
-                                        />
-                                        <Controller
-                                            name="student_year"
-                                            control={control}
-                                            render={({field: {onChange, value}}) => (
-                                                <TextField fullWidth onChange={onChange} value={value}
-                                                           label="Input student year"
-                                                           error={Boolean(errors.student_year)}
-                                                           helperText={errors.student_year?.message}/>
-                                            )}
-                                        />
-                                    </>
-                                }
+                                <Controller
+                                    name="student_year"
+                                    control={control}
+                                    render={({field: {onChange, value}}) => (
+                                        <TextField fullWidth onChange={onChange} value={value}
+                                                   label="Input student year"
+                                                   error={Boolean(errors.student_year)} helperText={errors.student_year?.message}/>
+                                    )}
+                                />
                                 <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                     Submit
                                 </Button>
@@ -186,7 +168,7 @@ export default function CreateUserModal({openCreateModal, setOpenCreateModal, re
             }} open={openNoti} autoHideDuration={6000} onClose={() => setOpenNoti(false)}>
                 <Alert onClose={() => setOpenNoti(false)} severity="success"
                        sx={{width: '100%', background: '#4caf50', color: '#fff'}}>
-                    Create successfully
+                    {noti}
                 </Alert>
             </Snackbar>
         </>

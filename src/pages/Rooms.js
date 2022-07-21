@@ -20,8 +20,8 @@ import {
 import Page from "../components/Page";
 import Scrollbar from "../components/Scrollbar";
 import {UserListHead} from "../sections/@dashboard/user";
-import CreateRoomModal from "../components/room/CreateRoomModal";
-import UpdateRoomModal from "../components/room/UpdateRoomModal";
+import CreateForm from "../components/room/CreateForm";
+import EditForm from "../components/room/EditForm";
 import {getDoms, getRooms} from "../connector/fetch";
 import Iconify from "../components/Iconify";
 
@@ -136,7 +136,7 @@ export default function Rooms() {
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <UpdateRoomModal
+                                                    <EditForm
                                                         room={row}
                                                         doms={listDoms}
                                                         openUpdateModal={openUpdateModal}
@@ -167,7 +167,7 @@ export default function Rooms() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateRoomModal
+                    <CreateForm
                         doms={listDoms}
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}

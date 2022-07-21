@@ -4,7 +4,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import {Menu, MenuItem, IconButton, ListItemIcon, ListItemText} from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-import UpdateUserModal from "../../../components/user/UpdateUserModal";
+import EditForm from "../../../components/user/EditForm";
 
 // ----------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ export default function UserMoreMenu({row, reLoad, setReLoad}) {
                 </MenuItem>
             </Menu>
 
-            <UpdateUserModal initialValue={row} isOpenUpdateModal={isOpenUpdateModal}
-                             setIsOpenUpdateModal={setIsOpenUpdateModal} reLoad={reLoad} setReLoad={setReLoad}/>
+            <EditForm initialValue={row} isOpenUpdateModal={isOpenUpdateModal}
+                      setIsOpenUpdateModal={setIsOpenUpdateModal} reLoad={reLoad} setReLoad={setReLoad}/>
         </>
     );
 }

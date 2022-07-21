@@ -24,7 +24,7 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
-import CreateUserModal from "../components/user/CreateUserModal";
+import CreateForm from "../components/user/CreateForm";
 
 // ----------------------------------------------------------------------
 
@@ -173,7 +173,7 @@ export default function User() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateUserModal
+                    <CreateForm
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
                         reLoad={reLoad}

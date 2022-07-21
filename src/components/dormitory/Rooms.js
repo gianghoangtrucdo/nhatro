@@ -23,8 +23,8 @@ import Scrollbar from '../Scrollbar';
 import Iconify from '../Iconify';
 import {UserListHead} from '../../sections/@dashboard/user';
 import {getRoomsByDomId} from "../../connector/fetch";
-import CreateRoomModal from "./room/CreateRoomModal";
-import UpdateRoomModal from "./room/UpdateRoomModal";
+import CreateForm from "./room/CreateForm";
+import EditForm from "./room/EditForm";
 
 // ----------------------------------------------------------------------
 
@@ -118,13 +118,14 @@ export default function Rooms() {
                                                 <TableCell align="left">{MaxStudent}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
+                                                        <Button variant="contained" onClick={() => setOpenUpdateModal(ID)}>Edit</Button>
                                                         <Button variant="contained">Delete</Button>
                                                         <Button variant="contained" onClick={() => navigate('/dashboard/contracts')}>View Contract</Button>
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <UpdateRoomModal
+                                                    <EditForm
+                                                        domId={id}
                                                         room={row}
                                                         openUpdateModal={openUpdateModal}
                                                         setOpenUpdateModal={setOpenUpdateModal}
@@ -154,7 +155,7 @@ export default function Rooms() {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
 
-                    <CreateRoomModal
+                    <CreateForm
                         domId={id}
                         openCreateModal={openCreateModal}
                         setOpenCreateModal={setOpenCreateModal}
