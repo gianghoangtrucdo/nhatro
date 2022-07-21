@@ -9,4 +9,5 @@ module.exports = Object.freeze({
 
     getDoms: `${serverAddress}/dom/list`,
     getDom: `${serverAddress}/dom`,
+    createDom: `${serverAddress}/dom/create`,
 });

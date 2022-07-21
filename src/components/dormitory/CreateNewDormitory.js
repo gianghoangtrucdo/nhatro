@@ -33,7 +33,7 @@ const schema = yup.object({
 }).required();
 
 export default function CreateNewDormitory({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
-    const [openNoti, setOpenNoti] = useState(false);
+    const [isOpen, setOpen] = useState(false);
     const [hosts, setHosts] = useState([]);
 
     const {handleSubmit, control, formState: {errors}} = useForm({
@@ -44,7 +44,7 @@ export default function CreateNewDormitory({openCreateModal, setOpenCreateModal,
         (async function () {
             const hosts = await getHosts(0, 50);
             const mappedHosts = hosts.map(element => ({
-                value: element.id, label: element.full_name,
+                value: element.id, label: element.user?.full_name,
             }))
             setHosts(mappedHosts);
         })()
@@ -52,22 +52,20 @@ export default function CreateNewDormitory({openCreateModal, setOpenCreateModal,
 
     const onSubmit = (data) => {
         const model = {
-            username: data.username,
-            password: data.password,
-            full_name: data.full_name,
+            name: data.name,
             address: data.address,
-            role: data.role.value,
-            account_status: data.account_status.value,
-            student_year: parseInt(data.student_year, 10),
-            student_school: data.student_school
+            nb_room: data.nb_room,
+            host_id: data.host.value
         }
-        fetch(API.createUser, {
-            method: 'POST', body: JSON.stringify(model), headers: {
+        fetch(API.createDom, {
+            method: 'POST',
+            body: JSON.stringify(model),
+            headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         }).then((res) => res.json())
             .then((res) => {
-                setOpenNoti(true);
+                setOpen(true);
                 setOpenCreateModal(false);
                 setReLoad(!reLoad);
             });
@@ -131,8 +129,8 @@ export default function CreateNewDormitory({openCreateModal, setOpenCreateModal,
 
         <Snackbar sx={{
             width: '40%', position: 'absolute', top: '0%', left: '0%',
-        }} open={openNoti} autoHideDuration={6000} onClose={() => setOpenNoti(false)}>
-            <Alert onClose={() => setOpenNoti(false)} severity="success"
+        }} open={isOpen} autoHideDuration={6000} onClose={() => setOpen(false)}>
+            <Alert onClose={() => setOpen(false)} severity="success"
                    sx={{width: '100%', background: '#4caf50', color: '#fff'}}>
                 Create successfully
             </Alert>

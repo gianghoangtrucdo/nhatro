@@ -22,7 +22,7 @@ const Doms = () => {
         })()
     }, [])
 
-    return (<Page title="Dashboard: Products">
+    return (<Page title="Dashboard: Dormitory">
         <Container>
             <Typography variant="h4" sx={{mb: 5}}>
                 Dormitory

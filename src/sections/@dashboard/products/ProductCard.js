@@ -24,7 +24,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { id, name, cover, nb_room, address, host, status } = product;
+  const { id, name, cover, nb_room, address, status } = product;
 
   return (
     <Card>
