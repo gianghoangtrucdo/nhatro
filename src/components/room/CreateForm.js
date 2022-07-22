@@ -27,8 +27,9 @@ const style = {
 };
 
 const schema = yup.object({
-    name: yup.string().required().max(500, 'Max length is 500 characters'),
-    max_student: yup.number().positive().integer(),
+    name: yup.string().required('Room name is required').max(500, 'Max length is 500 characters'),
+    max_student: yup.number().typeError('Maximum student is positive number').min(0, 'Min is 0'),
+    dom: yup.object().typeError('Dormitory is required').required('Dormitory is required')
 }).required();
 
 export default function CreateForm({doms, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
@@ -95,11 +96,15 @@ export default function CreateForm({doms, openCreateModal, setOpenCreateModal, r
                                 <Controller
                                     name="dom"
                                     control={control}
+                                    defaultValue={null}
                                     render={({field}) => <ReactSelect
                                         {...field}
                                         options={doms}
                                     />}
                                 />
+                                {Boolean(errors.dom) && <Alert variant="filled" severity="error">
+                                    {errors.dom?.message}
+                                </Alert>}
                                 <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                     Submit
                                 </Button>

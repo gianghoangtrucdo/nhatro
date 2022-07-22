@@ -5,12 +5,10 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import User from './pages/User';
 import NotFound from './pages/Page404';
-import DashboardApp from './pages/DashboardApp';
 import Doms from "./pages/Doms";
 import ViewAndUpdateDormitory from "./components/dormitory/ViewAndUpdateDormitory";
 import Contracts from "./pages/Contracts";
 import DomRooms from "./components/dormitory/Rooms";
-import Invoices from "./pages/Invoices";
 import Rooms from "./pages/Rooms";
 import Login from "./pages/Login";
 

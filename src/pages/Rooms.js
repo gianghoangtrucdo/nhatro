@@ -66,11 +66,13 @@ export default function Rooms() {
 
     useEffect(() => {
         (async function () {
-            const doms = await getDoms(0, 50)
-            const formatDoms = doms.map((el) => ({
-                value: el.id, label: el.name
-            }))
-            setListDoms(formatDoms);
+            const {json, logData} = await getDoms(0, 50)
+            if (logData.status === 200) {
+                const formatDoms = json.map((el) => ({
+                    value: el.id, label: el.name
+                }))
+                setListDoms(formatDoms);
+            }
         })()
     }, []);
 
