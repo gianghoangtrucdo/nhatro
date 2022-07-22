@@ -29,7 +29,8 @@ const style = {
 const schema = yup.object({
     name: yup.string().required('Dormitory name is required').max(500, 'Max length is 500 characters'),
     address: yup.string().required('Dormitory address is required').max(500, 'Max length is 500 characters'),
-    nb_room: yup.number().positive().integer().required('Number room is required'),
+    nb_room: yup.number().typeError('Room number is positive number').required('Number room is required').min(1, 'Min is 1'),
+    host: yup.object().typeError('Host is required').required('Host is required')
 }).required();
 
 export default function EditForm({item, openModal, setOpenModal, reLoad, setReLoad}) {
@@ -40,7 +41,8 @@ export default function EditForm({item, openModal, setOpenModal, reLoad, setReLo
         defaultValues: {
             name: item.name,
             nb_room: item.nb_room,
-            address: item.address
+            address: item.address,
+            host: {value: item?.host?.id, label: item?.host?.user?.full_name}
         },
         resolver: yupResolver(schema)
     });

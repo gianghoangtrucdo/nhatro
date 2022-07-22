@@ -29,26 +29,29 @@ const style = {
 const schema = yup.object({
     name: yup.string().required('Dormitory name is required').max(500, 'Max length is 500 characters'),
     address: yup.string().required('Dormitory address is required').max(500, 'Max length is 500 characters'),
-    nb_room: yup.number().positive().integer().required('Number room is required'),
+    nb_room: yup.number().typeError('Room number is positive number').required('Number room is required').min(1, 'Min is 1'),
+    host: yup.object().typeError('Host is required').required('Host is required')
 }).required();
 
 export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
     const [isOpen, setOpen] = useState(false);
     const [hosts, setHosts] = useState([]);
 
-    const {handleSubmit, control, formState: {errors}} = useForm({
+    const {handleSubmit, control, formState: {errors}, reset} = useForm({
         resolver: yupResolver(schema)
     });
 
     useEffect(() => {
         (async function () {
-            const hosts = await getHosts(0, 50);
-            const mappedHosts = hosts.map(element => ({
-                value: element.id, label: element.user?.full_name,
-            }))
-            setHosts(mappedHosts);
+            const {json, logData} = await getHosts(0, 50);
+            if (logData.status === 200) {
+                const mappedHosts = json.map(element => ({
+                    value: element.id, label: element.user?.full_name,
+                }))
+                setHosts(mappedHosts);
+            }
         })()
-    }, [])
+    }, []);
 
     const onSubmit = (data) => {
         const model = {
@@ -68,6 +71,7 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
             .then((res) => {
                 setOpen(true);
                 setOpenCreateModal(false);
+                reset();
                 setReLoad(!reLoad);
             });
     };
@@ -77,7 +81,7 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Modal
                     open={openCreateModal}
-                    onClose={() => setOpenCreateModal(false)}
+                    onClose={() => {setOpenCreateModal(false); reset()}}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -104,21 +108,29 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
                             <Controller
                                 name="nb_room"
                                 control={control}
-                                render={({field: {onChange, value}}) => (
-                                    <TextField fullWidth onChange={onChange} value={value}
-                                               label="Input room (number: 1,2,3,...)"
-                                               error={Boolean(errors.nb_room)}
-                                               helperText={errors.nb_room?.message}/>)}
+                                render={({field: {onChange, value, ref}}) => (
+                                    <TextField
+                                        inputRef={ref}
+                                        fullWidth
+                                        onChange={onChange}
+                                        value={value}
+                                        label="Input room (number: 1,2,3,...)"
+                                        error={Boolean(errors.nb_room)}
+                                        helperText={errors.nb_room?.message}/>)}
                             />
                             <section>Choose host</section>
                             <Controller
                                 name="host"
                                 control={control}
+                                defaultValue={null}
                                 render={({field}) => <ReactSelect
                                     {...field}
                                     options={hosts}
                                 />}
                             />
+                            {Boolean(errors.host) && <Alert variant="filled" severity="error">
+                                {errors.host?.message}
+                            </Alert>}
                             <Button variant="contained" onClick={handleSubmit(onSubmit)}>
                                 Submit
                             </Button>
