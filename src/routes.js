@@ -22,13 +22,11 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'doms', element: <Doms /> },
         { path: 'dom/rooms', element: <DomRooms /> },
         { path: 'rooms', element: <Rooms /> },
         { path: 'contracts', element: <Contracts /> },
-        { path: 'invoices', element: <Invoices /> },
         { path: 'dom/:id', element: <ViewAndUpdateDormitory /> },
       ],
     },

@@ -48,7 +48,7 @@ export default function LoginForm() {
         })
             .then((res) => {
                 localStorage.setItem("ACCESS_TOKEN", res.access_token);
-                navigate('/dashboard/app')
+                navigate('/dashboard/doms')
             });
     };
 

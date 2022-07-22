@@ -138,15 +138,13 @@ export default function Contracts() {
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="left">{room.Name}</TableCell>
-                                                <TableCell align="left">{start_date}</TableCell>
-                                                <TableCell align="left">{end_date}</TableCell>
+                                                <TableCell align="left">{start_date.substring(0, start_date.indexOf('T'))}</TableCell>
+                                                <TableCell align="left">{start_date.substring(0, end_date.indexOf('T'))}</TableCell>
                                                 <TableCell align="left">{price_per_month}</TableCell>
                                                 <TableCell align="left">{status}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(id)}>Edit</Button>
-                                                        <Button variant="contained">Delete</Button>
-                                                        <Button variant="contained" onClick={() => navigate('/dashboard/invoices')}>Invoice</Button>
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell>

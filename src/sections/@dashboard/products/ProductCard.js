@@ -96,7 +96,6 @@ export default function ShopProductCard({product, reload, setReload}) {
 
                 <Stack direction="row" alignItems="center" spacing={2}>
                     <Button variant="contained" onClick={() => setOpenModal(true)}>Edit</Button>
-                    <Button variant="contained">Delete</Button>
                     <Button variant="contained" onClick={() => navigate('/dashboard/dom/' + id)}>Detail</Button>
                 </Stack>
             </Stack>

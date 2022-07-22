@@ -72,7 +72,7 @@ export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpda
             .then((res) => {
                 setNoti(res);
                 setOpenNoti(true);
-                setIsOpenUpdateModal(false);
+                setIsOpenUpdateModal(-1);
                 setReLoad(!reLoad);
             });
     };
@@ -82,8 +82,8 @@ export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpda
             <form>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Modal
-                        open={isOpenUpdateModal}
-                        onClose={() => setIsOpenUpdateModal(false)}
+                        open={isOpenUpdateModal === initialValue.id}
+                        onClose={() => setIsOpenUpdateModal(-1)}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >

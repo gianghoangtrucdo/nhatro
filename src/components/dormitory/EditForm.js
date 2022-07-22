@@ -47,13 +47,15 @@ export default function EditForm({item, openModal, setOpenModal, reLoad, setReLo
 
     useEffect(() => {
         (async function () {
-            const hosts = await getHosts(0, 50);
-            const mappedHosts = hosts.map(element => ({
-                value: element.id, label: element.user?.full_name,
-            }))
-            setHosts(mappedHosts);
+            const {json, logData} = await getHosts(0, 50);
+            if (logData.status === 200) {
+                const mappedHosts = json.map(element => ({
+                    value: element.id, label: element.user?.full_name,
+                }))
+                setHosts(mappedHosts);
+            }
         })()
-    }, [])
+    }, []);
 
     const onSubmit = (data) => {
         const model = {

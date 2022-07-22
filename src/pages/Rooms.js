@@ -134,7 +134,6 @@ export default function Rooms() {
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(ID)}>Edit</Button>
-                                                        <Button variant="contained">Delete</Button>
                                                         <Button variant="contained" onClick={() => navigate('/dashboard/contracts')}>View Contract</Button>
                                                     </Stack>
                                                 </TableCell>

@@ -26,6 +26,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserMoreMenu } from '../sections/@dashboard/user';
 import CreateForm from "../components/user/CreateForm";
 import {getDoms, getUsers} from "../connector/fetch";
+import EditForm from "../components/user/EditForm";
 
 // ----------------------------------------------------------------------
 
@@ -38,6 +39,7 @@ const TABLE_HEAD = [
     { id: 'school', label: 'School Name', alignRight: false },
     { id: 'year', label: 'School Year', alignRight: false },
     { id: 'accountStatus', label: 'Account Status', alignRight: false },
+    { id: 'option', label: 'Option', alignRight: false },
     { id: '' },
 ];
 
@@ -55,6 +57,8 @@ export default function User() {
     const [listUsers, setListUsers] = useState(undefined);
 
     const [openCreateModal, setOpenCreateModal] = useState(false);
+
+    const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(-1);
 
     const [reLoad, setReLoad] = useState(false);
 
@@ -143,7 +147,15 @@ export default function User() {
                                                 <TableCell align="left">{student_year}</TableCell>
                                                 <TableCell align="left">{account_status}</TableCell>
                                                 <TableCell align="right">
-                                                    <UserMoreMenu row={row} reLoad={reLoad} setReLoad={setReLoad} />
+                                                    <Button variant="contained" onClick={() => setIsOpenUpdateModal(id)}>Edit</Button>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <EditForm
+                                                        initialValue={row}
+                                                        isOpenUpdateModal={isOpenUpdateModal}
+                                                        setIsOpenUpdateModal={setIsOpenUpdateModal}
+                                                        reLoad={reLoad}
+                                                        setReLoad={setReLoad}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

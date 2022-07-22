@@ -51,18 +51,21 @@ export const getRooms = async (offset = 0, limit = 50) => {
     })
 }
 
-const defaultHeaders = {
-    Accept: 'application/json', 'Content-Type': 'application/json',
-    Authorization: 'Bearer ' + localStorage.getItem("ACCESS_TOKEN")
-};
+const defaultHeaders = () => {
+    return {
+        Accept: 'application/json', 'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem("ACCESS_TOKEN")
+    };
+}
 
 const request = async (url, method, body, customHeaders = {}) => {
     let endpoint = url;
     if (!url.startsWith('http')) {
         endpoint = config.apiUrl + url;
     }
+
     const headers = {
-        ...defaultHeaders, ...customHeaders,
+        ...defaultHeaders(), ...customHeaders,
     };
 
     const fetchOpts = {

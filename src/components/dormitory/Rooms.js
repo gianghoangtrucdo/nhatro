@@ -56,8 +56,11 @@ export default function Rooms() {
 
     useEffect(() => {
         (async function () {
-            const rooms = await getRoomsByDomId(0, 50, id)
-            setListRooms(rooms);
+            const {json, logData} = await getRoomsByDomId(0, 50, id);
+            if (logData.status === 401) {
+                navigate('/');
+            }
+            setListRooms(json);
         })()
     }, [reLoad]);
 
@@ -119,7 +122,6 @@ export default function Rooms() {
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(ID)}>Edit</Button>
-                                                        <Button variant="contained">Delete</Button>
                                                         <Button variant="contained" onClick={() => navigate('/dashboard/contracts')}>View Contract</Button>
                                                     </Stack>
                                                 </TableCell>

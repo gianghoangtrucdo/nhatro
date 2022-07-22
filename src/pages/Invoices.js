@@ -145,7 +145,6 @@ export default function Invoices() {
                                                 <TableCell component="th" scope="row" padding="none">
                                                     <Stack direction="row" alignItems="center" spacing={2}>
                                                         <Button variant="contained" onClick={() => setOpenUpdateModal(true)}>Edit</Button>
-                                                        <Button variant="contained">Delete</Button>
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
