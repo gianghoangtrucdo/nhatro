@@ -25,8 +25,8 @@ const style = {
 };
 
 const schema = yup.object({
-    name: yup.string().required().max(500, 'Max length is 500 characters'),
-    max_student: yup.number().positive().integer(),
+    name: yup.string().required('Room name is required').max(500, 'Max length is 500 characters'),
+    max_student: yup.number().typeError('Maximum student is positive number').min(0, 'Min is 0'),
 }).required();
 
 export default function CreateForm({domId, openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
