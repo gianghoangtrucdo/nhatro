@@ -26,12 +26,14 @@ const style = {
 };
 
 const schema = yup.object({
-    username: yup.string().required().max(100, 'Max length is 100 characters'),
-    full_name: yup.string().required().max(100, 'Max length is 100 characters'),
-    password: yup.string().min(6, 'Min length is 6').max(20, 'Max length is 20 characters'),
-    address: yup.string().required().max(500, 'Max length is 500 characters'),
+    username: yup.string().required('User is required').max(100, 'Max length is 100 characters'),
+    full_name: yup.string().required('Full name is required').max(100, 'Max length is 100 characters'),
+    password: yup.string().required('Password is required').min(6, 'Min length is 6').max(20, 'Max length is 20 characters'),
+    address: yup.string().required('Address is required').max(500, 'Max length is 500 characters'),
     student_school: yup.string().max(500, 'Max length is 500 characters'),
-    student_year: yup.number().positive().integer(),
+    student_year: yup.number().typeError('Student year is positive number').min(0, 'Min is 0'),
+    account_status: yup.object().typeError('Account status is required').required('Account status is required'),
+    role: yup.object().typeError('Role is required').required('Role is required')
 }).required();
 
 export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad, setReLoad}) {
@@ -122,6 +124,7 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
                                 <Controller
                                     name="account_status"
                                     control={control}
+                                    defaultValue={null}
                                     render={({field}) => <ReactSelect
                                         {...field}
                                         options={[
@@ -130,10 +133,14 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
                                         ]}
                                     />}
                                 />
+                                {Boolean(errors.account_status) && <Alert variant="filled" severity="error">
+                                    {errors.account_status?.message}
+                                </Alert>}
                                 <section>Choose role</section>
                                 <Controller
                                     name="role"
                                     control={control}
+                                    defaultValue={null}
                                     render={({field: {onChange}}) => <ReactSelect
                                         options={[
                                             {value: "host", label: "Host"},
@@ -146,6 +153,9 @@ export default function CreateForm({openCreateModal, setOpenCreateModal, reLoad,
                                         }}
                                     />}
                                 />
+                                {Boolean(errors.role) && <Alert variant="filled" severity="error">
+                                    {errors.role?.message}
+                                </Alert>}
                                 {openFields &&
                                     <>
                                         <Controller

@@ -26,11 +26,13 @@ const style = {
 };
 
 const schema = yup.object({
-    full_name: yup.string().required().max(100, 'Max length is 100 characters'),
-    password: yup.string().min(6, 'Min length is 6').max(20, 'Max length is 20 characters'),
-    address: yup.string().required().max(500, 'Max length is 500 characters'),
-    student_school: yup.string().required().max(500, 'Max length is 500 characters'),
-    student_year: yup.number().positive().integer().required(),
+    username: yup.string().required('User is required').max(100, 'Max length is 100 characters'),
+    full_name: yup.string().required('Full name is required').max(100, 'Max length is 100 characters'),
+    new_password: yup.string().min(6, 'Min length is 6').max(20, 'Max length is 20 characters'),
+    address: yup.string().required('Address is required').max(500, 'Max length is 500 characters'),
+    student_school: yup.string().max(500, 'Max length is 500 characters'),
+    student_year: yup.number().typeError('Student year is positive number').min(0, 'Min is 0'),
+    account_status: yup.object().typeError('Account status is required').required('Account status is required'),
 }).required();
 
 export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpdateModal, reLoad, setReLoad}) {
@@ -53,7 +55,7 @@ export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpda
     const onSubmit = (data) => {
         const model = {
             id: initialValue.id,
-            password: data.password,
+            password: data.new_password,
             full_name: data.full_name,
             address: data.address,
             account_status: data.account_status.value,
@@ -106,11 +108,11 @@ export default function EditForm({initialValue, isOpenUpdateModal, setIsOpenUpda
                                     )}
                                 />
                                 <Controller
-                                    name="password"
+                                    name="new_password"
                                     control={control}
                                     render={({field: {onChange, value}}) => (
                                         <TextField fullWidth type="password" onChange={onChange} value={value}
-                                                   label="Input new password"
+                                                   label="Input new password (default: don't change password)"
                                                    error={Boolean(errors.password)} helperText={errors.password?.message}/>
                                     )}
                                 />
