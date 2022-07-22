@@ -60,16 +60,23 @@ export default function Contracts() {
 
     useEffect(() => {
         (async function () {
+            let json;
             const students = await getStudents(0, 50)
-            const format = students.map((el) => ({
-                value: el.id, label: el.user.full_name
-            }))
-            setListStudents(format)
+            if (students?.logData?.status === 200) {
+                json = students?.json;
+                const format = json.map((el) => ({
+                    value: el.id, label: el.user.full_name
+                }));
+                setListStudents(format)
+            }
             const rooms = await getRooms(0, 50)
-            const format2 = rooms.map((el) => ({
-                value: el.ID, label: el.Name
-            }))
-            setListRooms(format2)
+            if (rooms?.logData?.status === 200) {
+                json = rooms?.json;
+                const format2 = json.map((el) => ({
+                    value: el.ID, label: el.Name
+                }))
+                setListRooms(format2)
+            }
         })()
     }, []);
 
@@ -139,7 +146,7 @@ export default function Contracts() {
                                                 </TableCell>
                                                 <TableCell align="left">{room.Name}</TableCell>
                                                 <TableCell align="left">{start_date.substring(0, start_date.indexOf('T'))}</TableCell>
-                                                <TableCell align="left">{start_date.substring(0, end_date.indexOf('T'))}</TableCell>
+                                                <TableCell align="left">{end_date.substring(0, end_date.indexOf('T'))}</TableCell>
                                                 <TableCell align="left">{price_per_month}</TableCell>
                                                 <TableCell align="left">{status}</TableCell>
                                                 <TableCell component="th" scope="row" padding="none">

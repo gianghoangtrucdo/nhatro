@@ -19,16 +19,23 @@ const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
+    height: '60%',
     transform: 'translate(-50%, -50%)',
     width: 550,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4
+    p: 4,
+    overflow:'scroll',
 };
 
 const schema = yup.object({
-
+    student: yup.object().typeError('Student is required').required('Student is required'),
+    room: yup.object().typeError('Room is required').required('Room is required'),
+    start_date: yup.date().typeError('Start date is required').required('Start date is required'),
+    end_date: yup.date().typeError('End date is required').required('End date is required'),
+    price_per_month: yup.number().typeError('Price per month is positive number').min(0, 'Min is 0').required('Price is required'),
+    status: yup.string().required('Status is required'),
 }).required();
 
 export default function EditForm({item, rooms, students, openUpdateModal, setOpenUpdateModal, reLoad, setReLoad}) {
@@ -83,7 +90,7 @@ export default function EditForm({item, rooms, students, openUpdateModal, setOpe
                     >
                         <Box sx={style}>
                             <Stack direction="column" spacing={4}>
-                                <h2>Create new Contract</h2>
+                                <h2>Edit Contract</h2>
                                 <section>Choose room</section>
                                 <Controller
                                     name="room"
@@ -93,6 +100,9 @@ export default function EditForm({item, rooms, students, openUpdateModal, setOpe
                                         options={rooms}
                                     />}
                                 />
+                                {Boolean(errors.room) && <Alert variant="filled" severity="error">
+                                    {errors.room?.message}
+                                </Alert>}
                                 <section>Choose student</section>
                                 <Controller
                                     name="student"
@@ -102,6 +112,9 @@ export default function EditForm({item, rooms, students, openUpdateModal, setOpe
                                         options={students}
                                     />}
                                 />
+                                {Boolean(errors.student) && <Alert variant="filled" severity="error">
+                                    {errors.student?.message}
+                                </Alert>}
                                 <section>Choose start date</section>
                                 <Controller
                                     control={control}
@@ -115,6 +128,9 @@ export default function EditForm({item, rooms, students, openUpdateModal, setOpe
                                         />
                                     )}
                                 />
+                                {Boolean(errors.start_date) && <Alert variant="filled" severity="error">
+                                    {errors.start_date?.message}
+                                </Alert>}
                                 <section>Choose end date</section>
                                 <Controller
                                     control={control}
@@ -128,6 +144,9 @@ export default function EditForm({item, rooms, students, openUpdateModal, setOpe
                                         />
                                     )}
                                 />
+                                {Boolean(errors.end_date) && <Alert variant="filled" severity="error">
+                                    {errors.end_date?.message}
+                                </Alert>}
                                 <section>Input status</section>
                                 <Controller
                                     name="status"
